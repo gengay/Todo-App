@@ -3,15 +3,30 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyCq2jZletKyBXUY4eclu73ZVyOXprBF6WQ',
-  authDomain: 'todo-app-854fe.firebaseapp.com',
-  projectId: 'todo-app-854fe',
-  storageBucket: 'todo-app-854fe.firebasestorage.app',
-  messagingSenderId: '1062819427425',
-  appId: '1:1062819427425:web:cbd621ed9111fe7c39e620',
-  measurementId: 'G-XT100THYSQ',
+const env = (typeof process !== 'undefined' ? process.env : {}) as Record<string, string | undefined>;
+
+export const firebaseConfig = {
+  apiKey: env.EXPO_PUBLIC_FIREBASE_API_KEY ?? '',
+  authDomain: env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN ?? '',
+  projectId: env.EXPO_PUBLIC_FIREBASE_PROJECT_ID ?? '',
+  storageBucket: env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET ?? '',
+  messagingSenderId: env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? '',
+  appId: env.EXPO_PUBLIC_FIREBASE_APP_ID ?? '',
+  measurementId: env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID ?? '',
 };
+
+const hasRequiredFirebaseConfig = Boolean(
+  firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.appId,
+);
+
+if (!hasRequiredFirebaseConfig) {
+  console.warn(
+    'Firebase config is incomplete. Add EXPO_PUBLIC_FIREBASE_* values to your .env file before production use.',
+  );
+}
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
@@ -27,3 +42,5 @@ if (typeof window !== 'undefined') {
     }
   });
 }
+
+export const firebaseReady = hasRequiredFirebaseConfig;

@@ -37,6 +37,15 @@ const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 20 },
   label: { fontSize: 12, color: '#666', marginBottom: 4 },
   value: { fontSize: 18, fontWeight: '600', color: '#333' },
-  button: { backgroundColor: '#DC3545', borderRadius: 10, padding: 16, alignItems: 'center' },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  button: {
+    backgroundColor: '#DC3545',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

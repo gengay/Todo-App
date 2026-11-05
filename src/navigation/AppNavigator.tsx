@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
+import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthContext } from '../context/AuthContext';
 
 import LoginScreen from '../screens/Auth/LoginScreen';
+import LoginWeb from '../screens/Auth/LoginWeb';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import DashboardScreen from '../screens/Main/DashboardScreen';
 import TaskListScreen from '../screens/Main/TaskListScreen';
@@ -17,6 +19,7 @@ const Tab = createBottomTabNavigator();
 function MainTabs() {
   return (
     <Tab.Navigator
+      initialRouteName="Dashboard"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
@@ -42,7 +45,16 @@ function MainTabs() {
 }
 
 export default function AppNavigator() {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2563eb" />
+        <Text style={styles.loadingText}>Loading your workspace...</Text>
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
@@ -58,7 +70,10 @@ export default function AppNavigator() {
           </>
         ) : (
           <>
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen
+              name="Login"
+              component={Platform.OS === 'web' ? LoginWeb : LoginScreen}
+            />
             <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         )}
@@ -66,3 +81,18 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f8fafc',
+  },
+  loadingText: {
+    marginTop: 12,
+    color: '#334155',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
